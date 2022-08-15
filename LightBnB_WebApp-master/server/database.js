@@ -73,7 +73,10 @@ const addUser =  function(user) {
     RETURNING *`, [user.name, user.email, user.password]
     )
     .then(result => {
-      return res.row[0];
+      return result.rows[0];
+    })
+    .catch((err) => {
+      console.log(err.message);
     })
 };
 exports.addUser = addUser;
@@ -97,8 +100,11 @@ const getAllReservations = function(guest_id, limit = 10) {
     ORDER BY reservations.start_date
     LIMIT $2`, [guest_id, limit]
   )
-  .then(res => {
-    return res.rows;
+  .then(result => {
+    return result.rows;
+  })
+  .catch((err) => {
+    console.log(err.message);
   })
 };
 exports.getAllReservations = getAllReservations;
@@ -152,7 +158,14 @@ const getAllProperties = function(options, limit = 10) {
 
   console.log(queryString, queryParams);
 
-  return pool.query(queryString, queryParams).then((res) => res.rows);
+  return pool
+  .query(queryString, queryParams)
+  .then(result => {
+    return result.rows;
+  })
+  .catch((err) => {
+    console.log(err.message);
+  })
 };
 exports.getAllProperties = getAllProperties;
 
@@ -184,8 +197,11 @@ const addProperty = function(property) {
   VALUES ('${property.owner_id}', '${property.title}', '${property.description}', '${property.thumbnail_photo_url}', '${property.cover_photo_url}', '${property.cost_per_night}', '${property.street}', '${property.city}', '${property.province}', '${property.post_code}', '${property.country}', '${property.parking_spaces}', '${property.number_of_bathrooms}', '${property.number_of_bedrooms}')
   RETURNING *;
   `)
-  .then(res => {
-    return res.rows
+  .then(result => {
+    return result.rows
+  })
+  .catch((err) => {
+    console.log(err.message);
   })
 };
 exports.addProperty = addProperty;
